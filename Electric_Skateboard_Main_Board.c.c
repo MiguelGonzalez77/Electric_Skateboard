@@ -11,11 +11,12 @@
 #include "delay.h"
 #include "Servo_Driver.h"
 
-#define NUM_LEDS 39 //you must add 1 to how many existing LED's you have. 
-									  //For example, if you have 5 LEDs, put 6 for this number.
-									  //I implemented this because sometimes, a bit or two would bleed
-									  //into the next LED, causing it to light up green when the user did not want 
-									  //to. This causes that last LED to deliberatly be set to zero.
+#define NUM_LEDS 39 //you must add 1 to how many existing LED's you have on the board.
+
+//For example, if you have 5 LEDs, put 6 for this number.
+//I implemented this because sometimes, a bit or two would bleed
+//into the next LED, causing it to light up green when the user did not want 
+//to. This causes that last LED to deliberatly be set to zero.
 
 #define RX_PIPE 1
 #define ADDR_HIGH 0xAABBCCDD
@@ -24,6 +25,9 @@
 #define EN_AUTO_ACK 1
 #define PL_W 3
 #define CHANNEL 0x7B
+
+
+// the function prototypes below control some of the LED controls such as rainbow, clear, etc.
 
 void init_PWM_TIM4(void); //neopixels
 void TIM4_IRQHandler(void);
@@ -117,6 +121,7 @@ int main()
 		if(play_millis(100*1000) == 0) //this play_millis function equals 0 after the user identified time (in us) 
 																	 //has past. It will stay zero until the play_millis function is called again
 		{ 
+			// switch cases for which led color and choose each case for which led the user wants.
 			switch(dataBuffer[2])
 			{
 				case 0:
@@ -452,10 +457,10 @@ void strip_rainbow()
 }
 
 
-//sets the LEDs to no color. Be careful, even though the LEDs are off, the neopixels still draw current
-//because they are doing work to send zeros across each other.
+//sets the LEDs to no color.
 void strip_clear()
 {
-	strip_fill(0,0,0,0,NUM_LEDS);
+	strip_fill(0,0,0,0,NUM_LEDS); // NOTE: current will stil run even when LEDs are off, since the 0s will be continuing to run 
+	// to the board to maintain the leds off, so current is still running, so make sure to turn off all devices, when done.
 }
 
